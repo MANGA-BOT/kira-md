@@ -65,7 +65,7 @@ jobs:
             --exclude 'data' \
             --exclude 'temp' \
             ./ root@95.111.252.213:/var/www/kira md/
-
+            
       - name: Install dependencies and restart bot
         run: |
           sshpass -p 'Justin2026' ssh -o StrictHostKeyChecking=no root@95.111.252.213 "
