@@ -109,6 +109,7 @@ async function startUserBot(phoneNumber, isPairing = false) {
     });
 
     dvmsy.ev.on("creds.update", saveCreds);
+    return dvmsy;
 }
 
 async function restoreSessions() {
@@ -570,12 +571,21 @@ app.get("/", (req, res) => {
 
 app.get("/pair", async (req, res) => {
     const num = req.query.number;
+
+    if (!num) return res.json({ error: "Numéro manquant" });
+
     try {
         const dvmsy = await startUserBot(num, true);
-        await delay(8000); // Temps de sécurité
+
+        // attendre que le socket soit prêt
+        await delay(10000);
+
         const code = await dvmsy.requestPairingCode(num.trim());
-        res.json({ code: code });
+
+        res.json({ code });
+
     } catch (e) {
+        console.error("PAIR ERROR:", e);
         res.json({ error: "Serveur occupé ou numéro invalide." });
     }
 });
