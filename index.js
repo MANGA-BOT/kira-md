@@ -594,6 +594,7 @@ app.get("/sessions/count", (req, res) => {
 // --- DÉMARRAGE GLOBAL ---
 const port = process.env.PORT || 3000;
 
+// --- DÉMARRAGE GLOBAL ---
 app.listen(port, "0.0.0.0", async () => {
     console.log(`🌐 MARIA-XD prêt sur : http://95.111.252.213:${port}`);
     await restoreSessions();
