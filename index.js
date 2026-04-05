@@ -20,7 +20,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const port = 3002;
 const sessionsDir = path.join(__dirname, 'accounts');
 
 // Création du dossier de stockage si absent
