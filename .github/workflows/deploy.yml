@@ -1,0 +1,25 @@
+name: Deploy Maria Bot
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1.0.0
+
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          password: ${{ secrets.VPS_PASSWORD }}
+
+          script: |
+            cd ${{ secrets.VPS_PATH }}
+            git pull origin main
+            npm install
+            pm2 restart all
