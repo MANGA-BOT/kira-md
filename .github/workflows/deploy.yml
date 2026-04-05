@@ -21,9 +21,24 @@ jobs:
           script: |
             echo "🚀 Déploiement..."
 
+            # 🔧 Installer Node.js si absent
+            if ! command -v node &> /dev/null; then
+              echo "📦 Installation Node.js..."
+              curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+              apt install -y nodejs
+            fi
+
+            # 🔧 Installer PM2 si absent
+            if ! command -v pm2 &> /dev/null; then
+              echo "⚙️ Installation PM2..."
+              npm install -g pm2
+            fi
+
+            # 📁 Aller dans dossier
+            mkdir -p ${{ secrets.VPS_PATH }}
             cd ${{ secrets.VPS_PATH }}
 
-            # 🔥 FIX clone dans dossier kira-md
+            # 📥 Clone ou update
             if [ ! -d "kira-md" ]; then
               echo "📥 Clone du projet..."
               git clone https://github.com/MANGA-BOT/kira-md.git
@@ -34,11 +49,15 @@ jobs:
               cd ..
             fi
 
-            # 🔥 TOUJOURS aller dans le bon dossier
+            # 📂 Entrer dans projet
             cd kira-md
 
             echo "📦 Installation des dépendances..."
+            rm -rf node_modules package-lock.json
             npm install
+
+            # 🔥 FIX CRUCIAL
+            npm install moment-timezone
 
             echo "⚡ Gestion PM2..."
 
@@ -52,5 +71,12 @@ jobs:
             fi
 
             pm2 save
+
+            echo "📊 Status PM2:"
+            pm2 status
+
+            echo "🌐 Vérification serveur..."
+            sleep 5
+            netstat -tulnp | grep node || echo "⚠️ Aucun port détecté"
 
             echo "✅ Deploy terminé"
