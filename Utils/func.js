@@ -4,11 +4,11 @@ import chalk from "chalk"
 import crypto from "crypto"
 import axios from "axios"
 import moment from "moment-timezone"
-import Jimp from "jimp" // ✅ FIX (important pour Node 20)
+import * as Jimp from "jimp"
 import path from "path"
 import { fileURLToPath } from "url"
 
-// ✅ Baileys v6 compatible
+// ✅ Elaina-Bail (Baileys v7 fork)
 import {
   jidNormalizedUser,
   proto,
@@ -17,7 +17,7 @@ import {
   generateWAMessageFromContent,
   downloadContentFromMessage,
   delay
-} from "@whiskeysockets/baileys"
+} from "@rexxhayanasi/elaina-bail"
 
 // =================== Utils ===================
 export const sizeFormatter = (bytes, decimals = 2) => {
@@ -126,18 +126,13 @@ export const smsg = (client, m) => {
     }
 
     m.quoted.download = async () => {
-      try {
-        const stream = await downloadContentFromMessage(
-          quotedMsg,
-          type.replace("Message", "").toLowerCase()
-        )
-        const chunks = []
-        for await (const chunk of stream) chunks.push(chunk)
-        return Buffer.concat(chunks)
-      } catch (e) {
-        console.log("Quoted download error:", e)
-        return null
-      }
+      const stream = await downloadContentFromMessage(
+        quotedMsg,
+        type.replace("Message", "").toLowerCase()
+      )
+      const chunks = []
+      for await (const chunk of stream) chunks.push(chunk)
+      return Buffer.concat(chunks)
     }
   }
 
@@ -152,20 +147,15 @@ export const smsg = (client, m) => {
   }
 
   m.download = async () => {
-    try {
-      if (!m.msg) throw new Error("No media message")
-      const type = m.mtype.replace("Message", "")
-      const stream = await downloadContentFromMessage(
-        m.msg,
-        type.toLowerCase()
-      )
-      const chunks = []
-      for await (const chunk of stream) chunks.push(chunk)
-      return Buffer.concat(chunks)
-    } catch (e) {
-      console.log("Download error:", e)
-      return null
-    }
+    if (!m.msg) throw new Error("No media message")
+    const type = m.mtype.replace("Message", "")
+    const stream = await downloadContentFromMessage(
+      m.msg,
+      type.toLowerCase()
+    )
+    const chunks = []
+    for await (const chunk of stream) chunks.push(chunk)
+    return Buffer.concat(chunks)
   }
 
   return m
