@@ -19,7 +19,27 @@ jobs:
           password: ${{ secrets.VPS_PASSWORD }}
 
           script: |
+            echo "🚀 Déploiement..."
+
             cd ${{ secrets.VPS_PATH }}
+
+            echo "📥 Mise à jour du code..."
             git pull origin main
+
+            echo "📦 Installation des dépendances..."
             npm install
-            pm2 restart all
+
+            echo "⚡ Gestion PM2..."
+
+            pm2 describe kira-md > /dev/null
+            if [ $? -eq 0 ]; then
+              echo "🔄 Restart bot"
+              pm2 restart kira-md
+            else
+              echo "🆕 Démarrage bot"
+              pm2 start index.js --name kira-md
+            fi
+
+            pm2 save
+
+            echo "✅ Deploy terminé"
