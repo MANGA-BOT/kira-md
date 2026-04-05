@@ -23,8 +23,14 @@ jobs:
 
             cd ${{ secrets.VPS_PATH }}
 
-            echo "📥 Mise à jour du code..."
-            git pull origin main
+            # 🔥 FIX: clone si repo absent
+            if [ ! -d ".git" ]; then
+              echo "📥 Clone du projet..."
+              git clone https://github.com/MANGA-BOT/kira-md.git .
+            else
+              echo "📥 Mise à jour du code..."
+              git pull origin main
+            fi
 
             echo "📦 Installation des dépendances..."
             npm install
