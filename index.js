@@ -20,7 +20,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const port = 3002;
 const sessionsDir = path.join(__dirname, 'accounts');
 
 // Création du dossier de stockage si absent
@@ -110,6 +109,7 @@ async function startUserBot(phoneNumber, isPairing = false) {
     });
 
     dvmsy.ev.on("creds.update", saveCreds);
+    return dvmsy;
 }
 
 async function restoreSessions() {
@@ -137,7 +137,7 @@ app.get("/", (req, res) => {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>𝙼𝙰𝚁𝙸𝙰 𝚇𝙳 - 𝙿𝙰𝙽𝙴𝙻</title>
+        <title>ABESS MD - 𝙿𝙰𝙽𝙴𝙻</title>
         <style>
             @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&display=swap');
             * {
@@ -444,7 +444,7 @@ app.get("/", (req, res) => {
         
         <div class="container">
             <div class="box">
-                <h1>𝙼𝙰𝚁𝙸𝙰 𝚇𝙳</h1>
+                <h1>ABESS MD</h1>
                 <div class="subtitle">M U L T I - D E V I C E</div>
                 
                 <div class="input-group">
@@ -469,7 +469,7 @@ app.get("/", (req, res) => {
                 </div>
                 
                 <div class="footer">
-                    ⚡ MARIA XD SYSTEM V2.0 ⚡
+                    ⚡ ABESS MD V2.0 ⚡
                 </div>
             </div>
         </div>
@@ -571,12 +571,33 @@ app.get("/", (req, res) => {
 
 app.get("/pair", async (req, res) => {
     const num = req.query.number;
+
+    if (!num) {
+        return res.json({ error: "Numéro manquant" });
+    }
+
     try {
-        const dvmsy = await startUserBot(num, true);
-        await delay(8000); // Temps de sécurité
-        const code = await dvmsy.requestPairingCode(num.trim());
-        res.json({ code: code });
-    } catch (e) {
+        const phone = num.replace(/[^0-9]/g, '');
+
+        const sock = await startUserBot(phone, true);
+
+        // 🔥 attendre que la connexion soit prête
+        await new Promise(resolve => setTimeout(resolve, 15000));
+
+        if (!sock) {
+            return res.json({ error: "Socket non prêt" });
+        }
+
+        const code = await sock.requestPairingCode(phone);
+
+        if (!code) {
+            return res.json({ error: "Impossible de générer le code" });
+        }
+
+        res.json({ code });
+
+    } catch (err) {
+        console.error("PAIR ERROR:", err);
         res.json({ error: "Serveur occupé ou numéro invalide." });
     }
 });
@@ -592,7 +613,10 @@ app.get("/sessions/count", (req, res) => {
 });
 
 // --- DÉMARRAGE GLOBAL ---
-app.listen(port, async () => {
-    console.log(`🌐 MARIA-XD prêt sur : http://http://95.111.252.213/:${port}`);
+const port = process.env.PORT || 3000;
+
+// --- DÉMARRAGE GLOBAL ---
+app.listen(port, "0.0.0.0", async () => {
+    console.log(`🌐 MARIA-XD prêt sur : http://95.111.252.213:${port}`);
     await restoreSessions();
 });

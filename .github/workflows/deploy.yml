@@ -79,4 +79,8 @@ jobs:
             sleep 5
             netstat -tulnp | grep node || echo "⚠️ Aucun port détecté"
 
+<<<<<<< HEAD
             echo "✅ Deploy terminé"
+=======
+            echo "✅ Deploy terminé"
+>>>>>>> 51887cba277bcf1ccb83000a9218d0dd02aea7f0
