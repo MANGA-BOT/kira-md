@@ -572,20 +572,32 @@ app.get("/", (req, res) => {
 app.get("/pair", async (req, res) => {
     const num = req.query.number;
 
-    if (!num) return res.json({ error: "Numéro manquant" });
+    if (!num) {
+        return res.json({ error: "Numéro manquant" });
+    }
 
     try {
-        const dvmsy = await startUserBot(num, true);
+        const phone = num.replace(/[^0-9]/g, '');
 
-        // attendre que le socket soit prêt
-        await delay(10000);
+        const sock = await startUserBot(phone, true);
 
-        const code = await dvmsy.requestPairingCode(num.trim());
+        // 🔥 attendre que la connexion soit prête
+        await new Promise(resolve => setTimeout(resolve, 15000));
+
+        if (!sock) {
+            return res.json({ error: "Socket non prêt" });
+        }
+
+        const code = await sock.requestPairingCode(phone);
+
+        if (!code) {
+            return res.json({ error: "Impossible de générer le code" });
+        }
 
         res.json({ code });
 
-    } catch (e) {
-        console.error("PAIR ERROR:", e);
+    } catch (err) {
+        console.error("PAIR ERROR:", err);
         res.json({ error: "Serveur occupé ou numéro invalide." });
     }
 });
