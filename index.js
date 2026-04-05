@@ -592,7 +592,9 @@ app.get("/sessions/count", (req, res) => {
 });
 
 // --- DÉMARRAGE GLOBAL ---
-app.listen(port, async () => {
-    console.log(`🌐 MARIA-XD prêt sur : http://http://95.111.252.213/:${port}`);
+const port = process.env.PORT || 3000;
+
+app.listen(port, "0.0.0.0", async () => {
+    console.log(`🌐 MARIA-XD prêt sur : http://95.111.252.213:${port}`);
     await restoreSessions();
 });
