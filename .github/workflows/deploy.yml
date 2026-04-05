@@ -64,7 +64,7 @@ jobs:
             --exclude 'accounts' \
             --exclude 'data' \
             --exclude 'temp' \
-            ./ root@95.111.252.213:/var/www/kira md/
+            ./ root@95.111.252.213:/var/www/kira
             
       - name: Install dependencies and restart bot
         run: |
