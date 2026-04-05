@@ -136,7 +136,7 @@ app.get("/", (req, res) => {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>𝙼𝙰𝚁𝙸𝙰 𝚇𝙳 - 𝙿𝙰𝙽𝙴𝙻</title>
+        <title>ABESS MD - 𝙿𝙰𝙽𝙴𝙻</title>
         <style>
             @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&display=swap');
             * {
@@ -468,7 +468,7 @@ app.get("/", (req, res) => {
                 </div>
                 
                 <div class="footer">
-                    ⚡ MARIA XD SYSTEM V2.0 ⚡
+                    ⚡ ABESS MD V2.0 ⚡
                 </div>
             </div>
         </div>
