@@ -23,14 +23,19 @@ jobs:
 
             cd ${{ secrets.VPS_PATH }}
 
-            # 🔥 FIX: clone si repo absent
-            if [ ! -d ".git" ]; then
+            # 🔥 FIX clone dans dossier kira-md
+            if [ ! -d "kira-md" ]; then
               echo "📥 Clone du projet..."
-              git clone https://github.com/MANGA-BOT/kira-md.git .
+              git clone https://github.com/MANGA-BOT/kira-md.git
             else
               echo "📥 Mise à jour du code..."
+              cd kira-md
               git pull origin main
+              cd ..
             fi
+
+            # 🔥 TOUJOURS aller dans le bon dossier
+            cd kira-md
 
             echo "📦 Installation des dépendances..."
             npm install
